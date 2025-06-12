@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sword, Trophy, Users, Activity, User, Menu, Home, Plus, ChevronRight, Zap, Target, Flame } from 'lucide-react';
 import LoginScreen from './components/LoginScreen';
 import RegisterScreen from './components/RegisterScreen';
 import OnboardingFlow from './components/OnboardingFlow';
+import OnboardingModal from './components/OnboardingModal';
 import Dashboard from './components/Dashboard';
 import ProfileScreen from './components/ProfileScreen';
 import ActivityManagement from './components/ActivityManagement';
@@ -12,6 +13,8 @@ import CompetitionArena from './components/CompetitionArena';
 import ProfileComparison from './components/ProfileComparison';
 import QuestSystem from './components/QuestSystem';
 import MobileNavigation from './components/MobileNavigation';
+import Sidebar from './components/Sidebar';
+import NavigationHeader from './components/NavigationHeader';
 import { ThemeProvider } from './contexts/ThemeContext';
 
 type Screen = 'login' | 'register' | 'onboarding' | 'dashboard' | 'profile' | 'activities' | 'leaderboard' | 'olympiads' | 'competitions' | 'comparison' | 'quests';
@@ -20,14 +23,29 @@ function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('login');
   const [user, setUser] = useState(null);
   const [comparisonTarget, setComparisonTarget] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showOnboardingModal, setShowOnboardingModal] = useState(false);
+
+  useEffect(() => {
+    // Check if user should see onboarding
+    const onboardingCompleted = localStorage.getItem('onboardingCompleted');
+    if (!onboardingCompleted && user && currentScreen === 'dashboard') {
+      setShowOnboardingModal(true);
+    }
+  }, [user, currentScreen]);
 
   const handleProfileComparison = (targetUser: any) => {
     setComparisonTarget(targetUser);
     setCurrentScreen('comparison');
   };
 
+  const handleLogin = (userData: any) => {
+    setUser(userData);
+    setCurrentScreen('dashboard');
+  };
+
   const screenComponents = {
-    login: <LoginScreen onNavigate={setCurrentScreen} setUser={setUser} />,
+    login: <LoginScreen onNavigate={setCurrentScreen} setUser={handleLogin} />,
     register: <RegisterScreen onNavigate={setCurrentScreen} />,
     onboarding: <OnboardingFlow onNavigate={setCurrentScreen} />,
     dashboard: <Dashboard onNavigate={setCurrentScreen} user={user} />,
@@ -44,53 +62,68 @@ function App() {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-blue-900 dark:to-purple-900 transition-all duration-500">
-        {/* Animated Background Elements */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary-400/20 to-secondary-400/20 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-accent-400/20 to-primary-400/20 rounded-full blur-3xl animate-float" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-secondary-400/10 to-accent-400/10 rounded-full blur-3xl animate-pulse-slow"></div>
-        </div>
+      <div className="min-h-screen bg-gray-900">
+        {isAuthenticated ? (
+          <>
+            {/* Navigation Header */}
+            <NavigationHeader 
+              onMenuToggle={() => setSidebarOpen(true)}
+              user={user}
+              currentScreen={currentScreen}
+            />
 
-        {/* Screen Content */}
-        <div className={`relative z-10 ${isAuthenticated ? 'pb-20 md:pb-0' : ''}`}>
-          {screenComponents[currentScreen]}
-        </div>
+            {/* Sidebar */}
+            <Sidebar
+              isOpen={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
+              currentScreen={currentScreen}
+              onNavigate={setCurrentScreen}
+              user={user}
+            />
 
-        {/* Mobile Navigation - Only show for authenticated screens */}
-        {isAuthenticated && (
-          <MobileNavigation currentScreen={currentScreen} onNavigate={setCurrentScreen} />
+            {/* Main Content */}
+            <main className="pb-20 md:pb-0">
+              {screenComponents[currentScreen]}
+            </main>
+
+            {/* Mobile Navigation */}
+            <MobileNavigation currentScreen={currentScreen} onNavigate={setCurrentScreen} />
+
+            {/* Onboarding Modal */}
+            <OnboardingModal
+              isOpen={showOnboardingModal}
+              onClose={() => setShowOnboardingModal(false)}
+              onComplete={() => setShowOnboardingModal(false)}
+            />
+          </>
+        ) : (
+          <>
+            {/* Unauthenticated screens */}
+            {screenComponents[currentScreen]}
+          </>
         )}
 
-        {/* Enhanced Demo Navigation Panel */}
+        {/* Demo Navigation Panel - Simplified */}
         <div className="fixed top-4 right-4 z-50">
-          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 p-6 max-w-xs">
-            <div className="flex items-center mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center mr-3">
-                <Zap className="w-4 h-4 text-white" />
+          <div className="bg-gray-900/95 backdrop-blur-xl rounded-xl border border-gray-700/50 p-4 max-w-xs">
+            <div className="flex items-center mb-3">
+              <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mr-2">
+                <Zap className="w-3 h-3 text-white" />
               </div>
-              <h3 className="font-inter font-bold text-sm text-gray-900 dark:text-white">
-                Demo Navigation
-              </h3>
+              <h3 className="font-bold text-sm text-white">Demo Navigation</h3>
             </div>
-            <div className="space-y-2">
-              {Object.keys(screenComponents).map((screen) => (
+            <div className="space-y-1">
+              {Object.keys(screenComponents).slice(0, 6).map((screen) => (
                 <button
                   key={screen}
                   onClick={() => setCurrentScreen(screen as Screen)}
-                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
+                  className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
                     currentScreen === screen
-                      ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg'
-                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                      ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-white'
+                      : 'text-gray-400 hover:bg-gray-800/50 hover:text-white'
                   }`}
                 >
-                  <div className="flex items-center">
-                    {screen === 'olympiads' && <Target className="w-4 h-4 mr-2" />}
-                    {screen === 'competitions' && <Trophy className="w-4 h-4 mr-2" />}
-                    {screen === 'comparison' && <Users className="w-4 h-4 mr-2" />}
-                    {screen === 'quests' && <Flame className="w-4 h-4 mr-2" />}
-                    {screen.charAt(0).toUpperCase() + screen.slice(1)}
-                  </div>
+                  {screen.charAt(0).toUpperCase() + screen.slice(1)}
                 </button>
               ))}
             </div>
