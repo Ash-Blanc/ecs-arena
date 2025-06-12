@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, Sword, Moon, Sun } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Crown, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 interface LoginScreenProps {
@@ -37,44 +37,44 @@ export default function LoginScreen({ onNavigate, setUser }: LoginScreenProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-gray-900">
       {/* Theme Toggle */}
       <button
         onClick={toggleTheme}
-        className="fixed top-4 left-4 p-2 rounded-lg bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-200"
+        className="fixed top-4 left-4 p-3 rounded-xl bg-gray-800/50 border border-gray-700/50 hover:bg-gray-700/50 transition-all duration-200"
       >
         {isDark ? (
-          <Sun className="w-5 h-5 text-yellow-500" />
+          <Sun className="w-5 h-5 text-yellow-400" />
         ) : (
-          <Moon className="w-5 h-5 text-gray-600" />
+          <Moon className="w-5 h-5 text-gray-400" />
         )}
       </button>
 
       <div className="w-full max-w-md">
         {/* Logo and Header */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center shadow-lg">
-              <Sword className="w-8 h-8 text-white" />
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-6">
+            <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl flex items-center justify-center shadow-2xl">
+              <Crown className="w-10 h-10 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-inter font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-4xl font-bold text-white mb-3">
             ECS Arena
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 font-roboto">
-            Level up your extracurricular game
+          <p className="text-gray-400 text-lg">
+            Where Champions Are Forged
           </p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8 animate-slide-up">
-          <h2 className="text-xl font-inter font-semibold text-gray-900 dark:text-white mb-6">
-            Welcome back, Champion!
+        <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl border border-gray-700/50 p-8">
+          <h2 className="text-2xl font-bold text-white mb-6 text-center">
+            Welcome Back, Champion!
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 School Email
               </label>
               <div className="relative">
@@ -84,14 +84,14 @@ export default function LoginScreen({ onNavigate, setUser }: LoginScreenProps) {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700/50 text-white placeholder-gray-400 transition-all duration-200"
                   placeholder="student@school.edu"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -101,13 +101,13 @@ export default function LoginScreen({ onNavigate, setUser }: LoginScreenProps) {
                   required
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                  className="w-full pl-10 pr-12 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700/50 text-white placeholder-gray-400 transition-all duration-200"
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -118,13 +118,13 @@ export default function LoginScreen({ onNavigate, setUser }: LoginScreenProps) {
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-600 rounded"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 rounded bg-gray-700"
                 />
-                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
+                <span className="ml-2 text-sm text-gray-300">Remember me</span>
               </label>
               <button
                 type="button"
-                className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-500 font-medium"
+                className="text-sm text-blue-400 hover:text-blue-300 font-medium"
               >
                 Forgot password?
               </button>
@@ -133,12 +133,12 @@ export default function LoginScreen({ onNavigate, setUser }: LoginScreenProps) {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Logging in...
+                  Entering Arena...
                 </div>
               ) : (
                 'Enter the Arena'
@@ -147,11 +147,11 @@ export default function LoginScreen({ onNavigate, setUser }: LoginScreenProps) {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-400">
               New to ECS Arena?{' '}
               <button
                 onClick={() => onNavigate('register')}
-                className="text-primary-600 dark:text-primary-400 hover:text-primary-500 font-medium"
+                className="text-blue-400 hover:text-blue-300 font-medium"
               >
                 Join the quest
               </button>
@@ -161,7 +161,7 @@ export default function LoginScreen({ onNavigate, setUser }: LoginScreenProps) {
 
         {/* Demo Hint */}
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500">
             Demo: Use any email and password to continue
           </p>
         </div>
